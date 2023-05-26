@@ -13,7 +13,7 @@ import { GET, POST } from "./utils/http.js";
 // creo un array di oggetti dove salvare gli elementi che trovo con la GET da poter manipolare con DELETE e POST fake
 export let todoItemList = [];
 
-let inputValueText;
+let inputValueText = "";
 
 document.body.append(titleEl, inputTextEl, inputBtnEl, rootEl);
 
@@ -56,27 +56,33 @@ inputTextEl.addEventListener("change", (evt) => {
 });
 
 inputBtnEl.addEventListener("click", () => {
-  // faccio partire la POST per verificare che funzioni
-  POST("/add", {
-    todo: inputValueText,
-    completed: false,
-    userId: Math.floor(Math.random() * 100),
-  });
-  // dato che la POST viene solo simulata uso l'array di appoggio per listare effettivamente il nuovo item
-  todoItemList.unshift({
-    id: todoItemList.length + 1,
-    todo: inputValueText,
-    completed: false,
-    userId: Math.floor(Math.random() * 100),
-  });
+  if (inputValueText != "") {
+    // svuoto il text input
+    inputTextEl.value = "";
 
-  // cancello tutto per non duplicare gli elementi
-  rootEl.textContent = "";
+    // faccio partire la POST per verificare che funzioni
+    POST("/add", {
+      todo: inputValueText,
+      completed: false,
+      userId: Math.floor(Math.random() * 100),
+    });
+    // dato che la POST viene solo simulata uso l'array di appoggio per listare effettivamente il nuovo item
+    todoItemList.unshift({
+      id: todoItemList.length + 1,
+      todo: inputValueText,
+      completed: false,
+      userId: Math.floor(Math.random() * 100),
+    });
 
-  // render della nuova lista a partire dall'array di appoggio
-  renderList();
+    // cancello tutto per non duplicare gli elementi
+    rootEl.textContent = "";
+    // svuoto il valore della variabile inputValueText
+    inputValueText = "";
+    // render della nuova lista a partire dall'array di appoggio
+    renderList();
 
-  renderItems();
+    renderItems();
 
-  deleteItems();
+    deleteItems();
+  }
 });

@@ -97,17 +97,45 @@ export const createTodoItem = ({ id, todo, completed }) => {
   return todoItem;
 };
 
-export const renderList = () =>
+export const renderList = () => {
+  rootEl.textContent = "";
   todoItemList.forEach((item) => rootEl.append(createTodoItem(item)));
+  renderItems();
+  deleteItems();
+};
 
 export const renderItems = () => {
   const checkboxEls = qSA(".checkboxTodo");
   checkboxEls.forEach((checkbox) =>
-    checkbox.addEventListener("click", (evt) => {
+    checkbox.addEventListener("change", (evt) => {
       todoItemList.forEach((item) => {
-        if (item.id == evt.target.id) {
+        if (item.id === parseInt(evt.target.id)) {
           item.completed = !item.completed;
           checkbox.parentNode.classList.toggle("todoItem__completed");
+          alert("eccolo");
+          console.log(item, todoItemList.indexOf(item));
+          if (item.completed) {
+            todoItemList.push(
+              todoItemList.splice(todoItemList.indexOf(item), 1)[0]
+            );
+            renderList();
+          }
+
+          // let a = todoItemList.find((b) => b.id === item.id);
+          // a = {
+          //   ...a,
+          //   completed: true,
+          // };
+          // todoItemList.splice(index, 1);
+          // todoItemList.push(a);
+
+          // rootEl.textContent = "";
+
+          // renderList();
+
+          // renderItems();
+
+          // deleteItems();
         }
       });
     })
@@ -128,16 +156,6 @@ export const deleteItems = () => {
             todoItemList.splice(i, 1);
           }
         });
-
-        // cancello tutto per non duplicare gli elementi
-        rootEl.textContent = "";
-
-        // render della nuova lista a partire dall'array di appoggio
-        renderList();
-
-        renderItems();
-
-        deleteItems();
       }
     })
   );
